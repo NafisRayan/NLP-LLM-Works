@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot</title>
+</head>
+<body>
+    <div id="chat-history"></div>
+    <form id="chat-form">
+        <input type="text" id="user-input" name="user_input" placeholder="Type your message...">
+        <input type="hidden" id="history" name="history" value="[]">
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var userInput = document.getElementById('user-input').value;
+            var history = document.getElementById('history').value;
+            fetch('/chat', {
+                method: 'POST',
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                var chatHistory = document.getElementById('chat-history');
+                chatHistory.innerHTML += '<p>You: ' + userInput + '</p>';
+                chatHistory.innerHTML += '<p>Bot: ' + data.response + '</p>';
+                document.getElementById('history').value = data.history;
+            });
+        });
+    </script>
+</body>
+</html>
